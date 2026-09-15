@@ -117,7 +117,7 @@ View Departments
 🔗 Class Relationship
 The main relationship required in this practical task is:
 
-Plaintext
+
 Department
     │
     ▼
@@ -127,7 +127,7 @@ Department
  Student
 For example:
 
-Plaintext
+
 Computer Science Department
             │
             ▼
@@ -178,35 +178,34 @@ View Students
 Display all students stored in the system.
 
 Search Student
-Search for a student using:
 
-Plaintext
+Search for a student using:
 Student ID
 Student Name
 Update Student
+
+
 Update the student's:
 
-Plaintext
 Name
 Age
 City
 Delete Student
 Delete a student after confirmation.
 
+
 📚 Course Management
 The system allows you to:
 
 Add a new course
-
 View all courses
-
 Enroll students into courses
 
 Example:
-
-Plaintext
 Course ID: C01
 Course Name: Python
+
+
 🏢 Department Management
 The system allows you to:
 
@@ -219,6 +218,8 @@ View department information
 Example:
 Department ID: D01
 Department Name: Computer Science
+
+
 👨‍🏫 Teacher Management
 Teachers can be added with:
 
@@ -226,6 +227,8 @@ Teachers can be added with:
 Teacher ID
 Teacher Name
 Subject
+
+
 🖥️ Menu
 When the program starts, the following menu is displayed:
 
@@ -253,55 +256,57 @@ Make sure Python is installed on your system.
 
 Check the Python version:
 
-Bash
+
 python --version
 or:
-
-Bash
 python3 --version
+
 Step 2: Clone or Download the Project
 Place the project files in a folder.
 
 Example:
 
-Plaintext
 student-management-system/
+
 Step 3: Run the Program
 Open the terminal inside the project folder and run:
 
-Bash
+
 python main.py
 For some Linux/macOS systems:
 
-Bash
 python3 main.py
+
 💡 Example Usage
+
 Create a student
-Plaintext
+
 Enter Student ID: 101
 Enter Student Name: Anshuman
 Enter Age: 22
 Enter City: Mumbai
 Output:
-
-Plaintext
 Student added successfully!
+
+
 Create a course
-Plaintext
+
 Enter Course ID: C01
 Enter Course Name: Python
+
 Output:
 
-Plaintext
 Course added successfully!
+
 Enroll student
-Plaintext
+
 Enter Student ID: 101
 Enter Course ID: C01
-Output:
 
-Plaintext
+Output:
 Anshuman enrolled in Python successfully!
+
+
 🧠 OOP Concepts Demonstrated
 This project demonstrates important Python OOP concepts.
 

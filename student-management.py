@@ -1,76 +1,18 @@
-# ============================================================
-# OOP BASED STUDENT MANAGEMENT SYSTEM
-# ============================================================
-
-
-# ============================================================
-# Student Class
-# ============================================================
-
+# Represents a student in the system
 class Student:
 
-    def __init__(self, student_id, name, age, city):
+    def __init__(self, student_id, name, age):
         self.student_id = student_id
         self.name = name
         self.age = age
-        self.city = city
-        self.courses = []
 
-    def add_course(self, course):
-        if course not in self.courses:
-            self.courses.append(course)
-
-    def display_details(self):
-        print("\nStudent Information")
-        print("-" * 40)
-        print(f"Student ID : {self.student_id}")
-        print(f"Name       : {self.name}")
-        print(f"Age        : {self.age}")
-        print(f"City       : {self.city}")
-
-        if self.courses:
-            print("Courses    : ", end="")
-            print(", ".join(course.course_name for course in self.courses))
-        else:
-            print("Courses    : No course assigned")
-
-        print("-" * 40)
+    def display(self):
+        print("ID:", self.student_id)
+        print("Name:", self.name)
+        print("Age:", self.age)
 
 
-# ============================================================
-# Course Class
-# ============================================================
-
-class Course:
-
-    def __init__(self, course_id, course_name):
-        self.course_id = course_id
-        self.course_name = course_name
-        self.students = []
-
-    def add_student(self, student):
-        if student not in self.students:
-            self.students.append(student)
-
-            # Also add this course to student's course list
-            student.add_course(self)
-
-    def display_course(self):
-        print(f"\nCourse ID   : {self.course_id}")
-        print(f"Course Name : {self.course_name}")
-
-        if self.students:
-            print("Students:")
-            for student in self.students:
-                print(f"  - {student.name} (ID: {student.student_id})")
-        else:
-            print("Students    : No students enrolled")
-
-
-# ============================================================
-# Teacher Class
-# ============================================================
-
+# Represents a teacher who can be assigned to a course
 class Teacher:
 
     def __init__(self, teacher_id, name, subject):
@@ -78,507 +20,498 @@ class Teacher:
         self.name = name
         self.subject = subject
 
-    def display_teacher(self):
-        print("\nTeacher Information")
-        print("-" * 40)
-        print(f"Teacher ID : {self.teacher_id}")
-        print(f"Name       : {self.name}")
-        print(f"Subject    : {self.subject}")
-        print("-" * 40)
+    def display(self):
+        print("Teacher ID:", self.teacher_id)
+        print("Teacher Name:", self.name)
+        print("Subject:", self.subject)
 
 
-# ============================================================
-# Department Class
-# ============================================================
+# A course contains enrolled students and an assigned teacher
+class Course:
 
+    def __init__(self, course_name):
+        self.course_name = course_name
+        self.students = []
+        self.teacher = None
+
+    def add_student(self, student):
+        self.students.append(student)
+
+    def remove_student(self, student):
+        self.students.remove(student)
+
+    def assign_teacher(self, teacher):
+        self.teacher = teacher
+
+    def display(self):
+
+        print("\nCourse:", self.course_name)
+
+        if self.teacher:
+            print(
+                "Teacher:",
+                self.teacher.name
+            )
+
+        if len(self.students) == 0:
+            print("No students enrolled.")
+            return
+
+        print("Students:")
+
+        for student in self.students:
+            print(
+                student.student_id,
+                "-",
+                student.name
+            )
+
+
+# A department contains multiple courses
 class Department:
 
-    def __init__(self, department_id, department_name):
-        self.department_id = department_id
+    def __init__(self, department_name):
         self.department_name = department_name
         self.courses = []
-        self.teachers = []
 
     def add_course(self, course):
-        if course not in self.courses:
-            self.courses.append(course)
+        self.courses.append(course)
 
-    def add_teacher(self, teacher):
-        if teacher not in self.teachers:
-            self.teachers.append(teacher)
+    def display(self):
 
-    def display_department(self):
-        print("\nDepartment Information")
-        print("=" * 50)
-        print(f"Department ID   : {self.department_id}")
-        print(f"Department Name : {self.department_name}")
+        print("\nDepartment:", self.department_name)
 
-        print("\nCourses:")
-        if self.courses:
-            for course in self.courses:
-                print(f"  - {course.course_name}")
-        else:
-            print("  No courses available")
+        if len(self.courses) == 0:
+            print("No courses available.")
+            return
 
-        print("\nTeachers:")
-        if self.teachers:
-            for teacher in self.teachers:
-                print(f"  - {teacher.name}")
-        else:
-            print("  No teachers available")
-
-        print("=" * 50)
+        for course in self.courses:
+            course.display()
 
 
-# ============================================================
-# Student Management System Class
-# ============================================================
-
+# Handles all operations of the student management application
 class StudentManagementSystem:
 
     def __init__(self):
         self.students = []
-        self.courses = []
         self.departments = []
         self.teachers = []
 
-    # --------------------------------------------------------
-    # Add Student
-    # --------------------------------------------------------
-
     def add_student(self):
 
-        print("\n========== ADD STUDENT ==========")
-
         try:
-            student_id = int(input("Enter Student ID: "))
+            sid = int(input("Enter student ID: "))
 
-            # Check duplicate ID
+            # Prevent two students from having the same ID
             for student in self.students:
-                if student.student_id == student_id:
-                    print("Student ID already exists.")
+
+                if student.student_id == sid:
+                    print("ID already exists.")
                     return
 
-            name = input("Enter Student Name: ").strip()
-            age = int(input("Enter Age: "))
-            city = input("Enter City: ").strip()
+            name = input("Enter name: ").strip()
 
-            student = Student(
-                student_id,
-                name,
-                age,
-                city
-            )
+            if name == "":
+                print("Name cannot be empty.")
+                return
+
+            age = int(input("Enter age: "))
+
+            if age <= 0:
+                print("Enter a valid age.")
+                return
+
+            student = Student(sid, name, age)
 
             self.students.append(student)
 
-            print("Student added successfully!")
+            print("Student added.")
 
         except ValueError:
-            print("Invalid input.")
-
-
-    # --------------------------------------------------------
-    # View Students
-    # --------------------------------------------------------
+            print("Please enter a valid number.")
 
     def view_students(self):
 
-        print("\n========== ALL STUDENTS ==========")
-
-        if not self.students:
-            print("No students found.")
+        if len(self.students) == 0:
+            print("No students available.")
             return
 
-        print("-" * 70)
-
         for student in self.students:
+
             print(
-                f"ID: {student.student_id} | "
-                f"Name: {student.name} | "
-                f"Age: {student.age} | "
-                f"City: {student.city}"
+                "ID:", student.student_id,
+                "| Name:", student.name,
+                "| Age:", student.age
             )
-
-        print("-" * 70)
-
-
-    # --------------------------------------------------------
-    # Find Student
-    # --------------------------------------------------------
-
-    def find_student(self, student_id):
-
-        for student in self.students:
-
-            if student.student_id == student_id:
-                return student
-
-        return None
-
-
-    # --------------------------------------------------------
-    # Search Student
-    # --------------------------------------------------------
 
     def search_student(self):
 
-        print("\n========== SEARCH STUDENT ==========")
-
-        keyword = input("Enter Student ID or Name: ").strip()
-
-        found = False
+        name = input(
+            "Enter name to search: "
+        ).strip().lower()
 
         for student in self.students:
 
-            if (
-                str(student.student_id) == keyword
-                or keyword.lower() in student.name.lower()
-            ):
+            if student.name.lower() == name:
 
-                student.display_details()
-                found = True
+                print("Student found:")
 
-        if not found:
-            print("No student found.")
+                student.display()
 
+                return
 
-    # --------------------------------------------------------
-    # Update Student
-    # --------------------------------------------------------
+        print("Student not found.")
 
     def update_student(self):
 
-        print("\n========== UPDATE STUDENT ==========")
-
         try:
 
-            student_id = int(input("Enter Student ID: "))
+            sid = int(
+                input("Enter student ID: ")
+            )
 
-            student = self.find_student(student_id)
+            for student in self.students:
 
-            if student is None:
-                print("Student not found.")
-                return
+                if student.student_id == sid:
 
-            print("\nCurrent Details:")
+                    name = input(
+                        "Enter new name: "
+                    ).strip()
 
-            student.display_details()
+                    age = int(
+                        input("Enter new age: ")
+                    )
 
-            student.name = input("Enter New Name: ").strip()
-            student.age = int(input("Enter New Age: "))
-            student.city = input("Enter New City: ").strip()
+                    if name == "" or age <= 0:
 
-            print("Student updated successfully!")
+                        print("Invalid details.")
+
+                        return
+
+                    student.name = name
+                    student.age = age
+
+                    print("Student updated.")
+
+                    return
+
+            print("Student not found.")
 
         except ValueError:
 
-            print("Invalid input.")
-
-
-    # --------------------------------------------------------
-    # Delete Student
-    # --------------------------------------------------------
+            print("Please enter a valid number.")
 
     def delete_student(self):
 
-        print("\n========== DELETE STUDENT ==========")
-
         try:
 
-            student_id = int(input("Enter Student ID: "))
+            sid = int(
+                input("Enter student ID: ")
+            )
 
-            student = self.find_student(student_id)
+            for student in self.students:
 
-            if student is None:
-                print("Student not found.")
-                return
+                if student.student_id == sid:
 
-            confirmation = input(
-                f"Delete {student.name}? (y/n): "
-            ).lower()
+                    self.students.remove(student)
 
-            if confirmation in ("y", "yes"):
+                    # Remove the student from any course they were enrolled in
+                    for department in self.departments:
 
-                self.students.remove(student)
+                        for course in department.courses:
 
-                print("Student deleted successfully!")
+                            if student in course.students:
 
-            else:
+                                course.remove_student(student)
 
-                print("Delete operation cancelled.")
+                    print("Student deleted.")
+
+                    return
+
+            print("Student not found.")
 
         except ValueError:
 
-            print("Invalid input.")
+            print("Please enter a valid number.")
 
+    def show_student(self):
 
-    # --------------------------------------------------------
-    # Add Course
-    # --------------------------------------------------------
+        try:
+
+            sid = int(
+                input("Enter student ID: ")
+            )
+
+            for student in self.students:
+
+                if student.student_id == sid:
+
+                    print("\nStudent Details")
+
+                    student.display()
+
+                    return
+
+            print("Student not found.")
+
+        except ValueError:
+
+            print("Please enter a valid ID.")
 
     def add_course(self):
 
-        print("\n========== ADD COURSE ==========")
+        course_name = input(
+            "Enter course name: "
+        ).strip()
 
-        course_id = input("Enter Course ID: ")
-        course_name = input("Enter Course Name: ")
+        if course_name == "":
+            print("Course name cannot be empty.")
+            return
 
-        course = Course(course_id, course_name)
+        course = Course(course_name)
 
-        self.courses.append(course)
+        department_name = input(
+            "Enter department name: "
+        ).strip()
 
-        print("Course added successfully!")
+        # Add the course to an existing department if found
+        for department in self.departments:
 
+            if department.department_name.lower() == department_name.lower():
 
-    # --------------------------------------------------------
-    # Enroll Student
-    # --------------------------------------------------------
+                department.add_course(course)
 
-    def enroll_student(self):
+                print("Course added to department.")
 
-        print("\n========== ENROLL STUDENT ==========")
-
-        try:
-
-            student_id = int(input("Enter Student ID: "))
-
-            student = self.find_student(student_id)
-
-            if student is None:
-                print("Student not found.")
                 return
 
-            course_id = input("Enter Course ID: ")
-
-            course = None
-
-            for c in self.courses:
-
-                if c.course_id == course_id:
-                    course = c
-                    break
-
-            if course is None:
-                print("Course not found.")
-                return
-
-            course.add_student(student)
-
-            print(
-                f"{student.name} enrolled in "
-                f"{course.course_name} successfully!"
-            )
-
-        except ValueError:
-
-            print("Invalid input.")
-
-
-    # --------------------------------------------------------
-    # View Courses
-    # --------------------------------------------------------
-
-    def view_courses(self):
-
-        print("\n========== ALL COURSES ==========")
-
-        if not self.courses:
-
-            print("No courses found.")
-            return
-
-        for course in self.courses:
-
-            course.display_course()
-
-
-    # --------------------------------------------------------
-    # Add Department
-    # --------------------------------------------------------
-
-    def add_department(self):
-
-        print("\n========== ADD DEPARTMENT ==========")
-
-        department_id = input("Enter Department ID: ")
-        department_name = input("Enter Department Name: ")
-
-        department = Department(
-            department_id,
-            department_name
-        )
-
-        self.departments.append(department)
-
-        print("Department added successfully!")
-
-
-    # --------------------------------------------------------
-    # Add Teacher
-    # --------------------------------------------------------
-
-    def add_teacher(self):
-
-        print("\n========== ADD TEACHER ==========")
-
-        teacher_id = input("Enter Teacher ID: ")
-        name = input("Enter Teacher Name: ")
-        subject = input("Enter Subject: ")
-
-        teacher = Teacher(
-            teacher_id,
-            name,
-            subject
-        )
-
-        self.teachers.append(teacher)
-
-        print("Teacher added successfully!")
-
-
-    # --------------------------------------------------------
-    # Assign Course to Department
-    # --------------------------------------------------------
-
-    def assign_course_to_department(self):
-
-        print("\n========== ASSIGN COURSE ==========")
-
-        department_id = input("Enter Department ID: ")
-        course_id = input("Enter Course ID: ")
-
-        department = None
-        course = None
-
-        for d in self.departments:
-
-            if d.department_id == department_id:
-                department = d
-
-        for c in self.courses:
-
-            if c.course_id == course_id:
-                course = c
-
-        if department is None:
-            print("Department not found.")
-            return
-
-        if course is None:
-            print("Course not found.")
-            return
+        # Create the department if it does not already exist
+        department = Department(department_name)
 
         department.add_course(course)
 
-        print("Course assigned to department successfully!")
+        self.departments.append(department)
 
+        print("Department and course added.")
 
-    # --------------------------------------------------------
-    # Display Departments
-    # --------------------------------------------------------
+    def enroll_student(self):
 
-    def view_departments(self):
+        try:
 
-        print("\n========== DEPARTMENTS ==========")
+            sid = int(
+                input("Enter student ID: ")
+            )
 
-        if not self.departments:
+            student = None
 
-            print("No departments found.")
+            # Find the student before enrolling them
+            for s in self.students:
+
+                if s.student_id == sid:
+                    student = s
+                    break
+
+            if student is None:
+
+                print("Student not found.")
+
+                return
+
+            course_name = input(
+                "Enter course name: "
+            ).strip()
+
+            # Find the course inside the department structure
+            for department in self.departments:
+
+                for course in department.courses:
+
+                    if course.course_name.lower() == course_name.lower():
+
+                        if student in course.students:
+
+                            print(
+                                "Student already enrolled."
+                            )
+
+                            return
+
+                        course.add_student(student)
+
+                        print("Student enrolled.")
+
+                        return
+
+            print("Course not found.")
+
+        except ValueError:
+
+            print("Please enter a valid ID.")
+
+    def add_teacher(self):
+
+        try:
+
+            teacher_id = int(
+                input("Enter teacher ID: ")
+            )
+
+            name = input(
+                "Enter teacher name: "
+            ).strip()
+
+            subject = input(
+                "Enter subject: "
+            ).strip()
+
+            teacher = Teacher(
+                teacher_id,
+                name,
+                subject
+            )
+
+            self.teachers.append(teacher)
+
+            print("Teacher added.")
+
+        except ValueError:
+
+            print("Please enter a valid number.")
+
+    def assign_teacher(self):
+
+        try:
+
+            teacher_id = int(
+                input("Enter teacher ID: ")
+            )
+
+            teacher = None
+
+            for t in self.teachers:
+
+                if t.teacher_id == teacher_id:
+
+                    teacher = t
+
+                    break
+
+            if teacher is None:
+
+                print("Teacher not found.")
+
+                return
+
+            course_name = input(
+                "Enter course name: "
+            ).strip()
+
+            for department in self.departments:
+
+                for course in department.courses:
+
+                    if course.course_name.lower() == course_name.lower():
+
+                        course.assign_teacher(teacher)
+
+                        print("Teacher assigned.")
+
+                        return
+
+            print("Course not found.")
+
+        except ValueError:
+
+            print("Please enter a valid ID.")
+
+    def display_department(self):
+
+        if len(self.departments) == 0:
+
+            print("No departments available.")
+
             return
 
         for department in self.departments:
 
-            department.display_department()
+            department.display()
 
-
-    # --------------------------------------------------------
-    # Main Menu
-    # --------------------------------------------------------
-
-    def menu(self):
+    def run(self):
 
         while True:
 
-            print("\n")
-            print("=" * 55)
-            print("       STUDENT MANAGEMENT SYSTEM")
-            print("=" * 55)
+            print("\n--- Student Management System ---")
 
             print("1. Add Student")
             print("2. View Students")
             print("3. Search Student")
             print("4. Update Student")
             print("5. Delete Student")
-            print("6. Add Course")
-            print("7. View Courses")
-            print("8. Enroll Student in Course")
-            print("9. Add Department")
-            print("10. Add Teacher")
-            print("11. Assign Course to Department")
-            print("12. View Departments")
-            print("13. Exit")
+            print("6. Student Details")
+            print("7. Add Course")
+            print("8. Enroll Student")
+            print("9. Add Teacher")
+            print("10. Assign Teacher")
+            print("11. Display Department")
+            print("12. Exit")
 
-            print("=" * 55)
+            try:
 
-            choice = input("Enter your choice: ")
-
-            if choice == "1":
-                self.add_student()
-
-            elif choice == "2":
-                self.view_students()
-
-            elif choice == "3":
-                self.search_student()
-
-            elif choice == "4":
-                self.update_student()
-
-            elif choice == "5":
-                self.delete_student()
-
-            elif choice == "6":
-                self.add_course()
-
-            elif choice == "7":
-                self.view_courses()
-
-            elif choice == "8":
-                self.enroll_student()
-
-            elif choice == "9":
-                self.add_department()
-
-            elif choice == "10":
-                self.add_teacher()
-
-            elif choice == "11":
-                self.assign_course_to_department()
-
-            elif choice == "12":
-                self.view_departments()
-
-            elif choice == "13":
-
-                print(
-                    "\nThank you for using "
-                    "Student Management System!"
+                choice = int(
+                    input("Enter choice: ")
                 )
 
-                break
+                if choice == 1:
+                    self.add_student()
 
-            else:
+                elif choice == 2:
+                    self.view_students()
 
-                print("Invalid choice. Please try again.")
+                elif choice == 3:
+                    self.search_student()
+
+                elif choice == 4:
+                    self.update_student()
+
+                elif choice == 5:
+                    self.delete_student()
+
+                elif choice == 6:
+                    self.show_student()
+
+                elif choice == 7:
+                    self.add_course()
+
+                elif choice == 8:
+                    self.enroll_student()
+
+                elif choice == 9:
+                    self.add_teacher()
+
+                elif choice == 10:
+                    self.assign_teacher()
+
+                elif choice == 11:
+                    self.display_department()
+
+                elif choice == 12:
+
+                    print("Goodbye!")
+
+                    break
+
+                else:
+
+                    print(
+                        "Choose a number from 1 to 12."
+                    )
+
+            except ValueError:
+
+                print("Please enter a number.")
 
 
-# ============================================================
-# Program Entry Point
-# ============================================================
+# Create the application object and start the program
+app = StudentManagementSystem()
 
-if __name__ == "__main__":
-
-    system = StudentManagementSystem()
-
-    system.menu()
+app.run()

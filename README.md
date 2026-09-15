@@ -10,7 +10,7 @@ This project is a conversion of a basic function-based Student Management applic
 ## 👨‍💻 Author
 
 **Anshuman**  
-*Python Developer / Student Management System Author*
+
 
 ---
 
